@@ -1,0 +1,6 @@
+interface:
+  display_name: "任务模型路由"
+  short_description: "按规划失误与返工成本选择 Astra 或 Sol，并将重复读取和批量检查委派给 Luna"
+  default_prompt: "使用 $task-model-router 按总完成成本选择模型并执行我的任务。"
+policy:
+  allow_implicit_invocation: true
