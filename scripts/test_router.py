@@ -35,6 +35,11 @@ class RouterTests(unittest.TestCase):
             classify.assert_not_called()
             self.assertIn('gpt-6-astra', run.call_args.args[0])
 
+    def test_sol_model_id(self):
+        with patch.object(r, 'classify', return_value=self.decision()), patch.object(r, 'codex_command', return_value=['codex.exe']), patch.object(r.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0)) as run:
+            self.assertEqual(r.main(['--prompt', 'task']), 0)
+            self.assertIn('gpt-6-sol', run.call_args.args[0])
+
     def test_shell_text_stays_stdin(self):
         text = '中文 "quoted"\n$(Get-Content secret) `whoami` & echo NO; --model bad'
         with patch.object(r, 'classify', return_value=self.decision()), patch.object(r, 'codex_command', return_value=['codex.exe']), patch.object(r.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0)) as run:
@@ -62,7 +67,7 @@ class RouterTests(unittest.TestCase):
         decision = self.decision() | {'luna_batch': True}
         prompt = r.execution_prompt('Read 100 logs', '', decision)
         self.assertIn('"luna_batch": true', prompt)
-        self.assertIn('gpt-5.6-luna', prompt)
+        self.assertIn('gpt-6-luna', prompt)
 
     def test_timeout(self):
         with patch.object(r, 'classify', side_effect=subprocess.TimeoutExpired('codex',1)):

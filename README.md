@@ -2,7 +2,7 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-A Codex skill that routes work between **GPT-6 Astra** and **GPT-5.6 Sol** by the expected cost of reaching a correct result—not by prompt length or nominal per-call cost. It can then delegate bounded, repetitive, low-judgment batches to **GPT-5.6 Luna**.
+A Codex skill that routes work between **GPT-6 Astra** and **GPT-6 Sol** by the expected cost of reaching a correct result—not by prompt length or nominal per-call cost. It can then delegate bounded, repetitive, low-judgment batches to **GPT-6 Luna**.
 
 ## Why this exists
 
@@ -20,9 +20,9 @@ Clear, locally verifiable work normally goes to Sol. Work with consequential unk
 
 | Route | Best fit |
 | --- | --- |
-| GPT-5.6 Sol | Clear approach, explicit acceptance criteria, local errors, inexpensive verification |
+| GPT-6 Sol | Clear approach, explicit acceptance criteria, local errors, inexpensive verification |
 | GPT-6 Astra | Uncertain early choices, deep dependencies, late error discovery, costly rework |
-| GPT-5.6 Luna subagent | Concrete, bounded, repetitive reading/extraction/checking with little interpretation |
+| GPT-6 Luna subagent | Concrete, bounded, repetitive reading/extraction/checking with little interpretation |
 
 Task length alone is not a routing signal: a long deterministic batch can stay on Sol, while a short but ambiguous production diagnosis can require Astra.
 
@@ -31,7 +31,7 @@ Task length alone is not a routing signal: a long deterministic batch can stay o
 Clone the repository into your Codex skills directory:
 
 ```powershell
-git clone https://github.com/LunarXuan/task-model-router.git "$env:CODEX_HOME/skills/task-model-router"
+git clone https://github.com/JeskoLu/task-model-router.git "$env:CODEX_HOME/skills/task-model-router"
 ```
 
 If `CODEX_HOME` is not set, use the `.codex/skills/task-model-router` directory under your user profile. Restart Codex or refresh skill discovery after installation.
@@ -45,6 +45,8 @@ $task-model-router Plan and implement a migration for these eight services...
 ```
 
 The skill reports the suggested model, rework risk, and concrete rationale before substantive execution. A skill cannot silently switch the model of an already-running desktop task; if the selection differs, choose the suggested model in the composer and send `continue`.
+
+If you have already selected GPT-6 Astra for the desktop task, the skill uses it as the main executor, including work that ordinary routing would assign to Sol and later continuations of the same task. It will not ask you to switch back to Sol. A new task follows its current model selection; switching is suggested only when the task needs Astra and is still running Sol.
 
 After the main model is selected, both Astra and Sol apply the same Luna delegation policy. The parent keeps planning, integration, consequential decisions, and final verification.
 
@@ -70,7 +72,7 @@ $skillRoot = Join-Path $env:CODEX_HOME 'skills/task-model-router'
   -RouteOnly
 ```
 
-The launcher performs one lightweight semantic classification with Sol, then starts the chosen model. `-Model sol` or `-Model astra` explicitly overrides classification. The default execution sandbox is `read-only`; pass `-Sandbox workspace-write` only when the task is authorized to modify the workspace.
+The launcher performs one lightweight semantic classification with GPT-6 Sol, then starts the chosen model. `-Model sol` or `-Model astra` explicitly overrides classification; use `-Model astra` to select Astra for one CLI run. The default execution sandbox is `read-only`; pass `-Sandbox workspace-write` only when the task is authorized to modify the workspace.
 
 ## Test
 

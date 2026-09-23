@@ -9,7 +9,7 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-MODELS = {'sol': 'gpt-5.6-sol', 'astra': 'gpt-6-astra'}
+MODELS = {'sol': 'gpt-6-sol', 'astra': 'gpt-6-astra'}
 SCHEMA = {'type': 'object', 'properties': {
     'model': {'type': 'string', 'enum': list(MODELS.values())},
     'rework_risk': {'type': 'string', 'enum': ['low', 'high', 'uncertain']},
